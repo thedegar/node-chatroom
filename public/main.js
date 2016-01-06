@@ -1,22 +1,32 @@
 $(document).ready(function() {
     var socket = io();
-    var input = $('input');
+    var chat = $('#chat');
+    var name = $('#name');
     var messages = $('#messages');
 
     var addMessage = function(message) {
-        messages.append('<div>' + message + '</div>');
+        messages.prepend('<div>' + message + '</div>');
     };
     
-    input.on('keydown', function(event) {
+    chat.on('keydown', function(event) {
         if (event.keyCode != 13) {
             return;
         }
 
-        var message = input.val();
-        addMessage(message);
+        var message = chat.val();
+        addMessage('You said : '+message);
         socket.emit('message', message);
-        input.val('');
+        chat.val('');
     });
     
     socket.on('message', addMessage);
+    
+    name.on('keydown', function(event) {
+        if (event.keyCode != 13) {
+            return;
+        }
+
+        var socketName = name.val();
+        socket.emit('name',socketName);
+    });
 });
